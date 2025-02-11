@@ -40,6 +40,8 @@ EXPOSE 3000
 # Set environment variables
 ENV NODE_ENV=production \
     PORT=3000 \
+    HOST=localhost \
+    # Add security headers
     ORIGIN=* \
     PROTOCOL_HEADER=x-forwarded-proto \
     HOST_HEADER=x-forwarded-host
