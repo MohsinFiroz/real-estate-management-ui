@@ -3,8 +3,8 @@ GITHUB_TOKEN=$1
 GITHUB_ACTOR=$2
 DOCKER_SERVER_IP=$3
 DOCKER_USER=$4
-DOCKER_PASSWORD=$3
-IMAGE_NAME=$(echo "$5" | tr '[:upper:]' '[:lower:]')
+DOCKER_PASSWORD=$5
+IMAGE_NAME=$(echo "$6" | tr '[:upper:]' '[:lower:]')
 
 # Log in to GitHub Container Registry
 echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
