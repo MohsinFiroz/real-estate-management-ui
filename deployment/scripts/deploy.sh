@@ -20,6 +20,6 @@ docker rm real-estate-management-ui || true
 
 # Run the new Docker container
 echo "Running the new Docker container..."
-docker run -d --name real-estate-management-ui -p 80:80 $IMAGE_NAME
+docker run -d --name real-estate-management-ui -p 3000:3000 $IMAGE_NAME
 
 echo "Deployment completed successfully!"
