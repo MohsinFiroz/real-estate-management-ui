@@ -1,10 +1,10 @@
 #!/bin/bash
-
-# Accept arguments passed from GitHub Actions
-DOCKER_SERVER_IP=$1
-DOCKER_USER=$2
+GITHUB_TOKEN=$1
+GITHUB_ACTOR=$2
+DOCKER_SERVER_IP=$3
+DOCKER_USER=$4
 DOCKER_PASSWORD=$3
-IMAGE_NAME=$(echo "$4" | tr '[:upper:]' '[:lower:]')
+IMAGE_NAME=$(echo "$5" | tr '[:upper:]' '[:lower:]')
 
 # Log in to GitHub Container Registry
 echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
@@ -15,8 +15,8 @@ docker pull $IMAGE_NAME
 
 # Stop and remove any running container with the same name
 echo "Stopping existing Docker container..."
-docker stop frontend-app || true
-docker rm frontend-app || true
+docker stop real-estate-management-ui || true
+docker rm real-estate-management-ui || true
 
 # Run the new Docker container
 echo "Running the new Docker container..."

@@ -64,6 +64,8 @@ jobs:
           script_stop: true
           script: |
             bash temp/deployment/scripts/deploy.sh \
+              ${{ secrets.GITHUB_TOKEN }} \
+              ${{ github.actor }} \
               ${{ secrets.DOCKER_SERVER_IP }} \
               ${{ secrets.DOCKER_USER }} \
               ${{ secrets.DOCKER_PASSWORD }} \
