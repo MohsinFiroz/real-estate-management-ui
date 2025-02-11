@@ -1,29 +1,23 @@
-# Step 1: Build the app
-FROM node:18 AS build
+# Use the official Node.js image
+FROM node:18-alpine
 
-# Set the working directory
+# Set working directory in the container
 WORKDIR /app
 
-# Copy package.json and pnpm-lock.yaml (if you're using pnpm)
-COPY package.json pnpm-lock.yaml* ./
+# Copy the package.json and lock file
+COPY package.json package-lock.json ./
 
-# Install dependencies (use pnpm as mentioned in your package.json)
-RUN npm install -g pnpm && pnpm install
+# Install dependencies
+RUN npm install
 
-# Copy the rest of the application code
+# Copy the entire project to the container
 COPY . .
 
-# Build the app using Vite
-RUN pnpm run build
+# Build the SvelteKit app (both client and server)
+RUN npm run build
 
-# Step 2: Serve the app using Nginx
-FROM nginx:alpine
+# Expose the port your app will run on
+EXPOSE 3000
 
-# Copy the build files from the previous stage
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Expose port 80 for the web server
-EXPOSE 80
-
-# Start Nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Run the SSR app with Node.js (start the app in production)
+CMD ["node", "build"]
