@@ -1,23 +1,44 @@
-# Use the official Node.js image
-FROM node:18-alpine
+# Build stage
+FROM node:20-alpine AS builder
 
-# Set working directory in the container
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
-# Copy the package.json and lock file
-COPY package.json package-lock.json ./
+# Copy package files
+COPY package.json pnpm-lock.yaml* ./
 
 # Install dependencies
-RUN npm install
+RUN pnpm install --frozen-lockfile
 
-# Copy the entire project to the container
+# Copy the rest of the application
 COPY . .
 
-# Build the SvelteKit app (both client and server)
-RUN npm run build
+# Build the application
+RUN pnpm build
 
-# Expose the port your app will run on
+# Production stage
+FROM node:20-alpine AS production
+
+WORKDIR /app
+
+# Copy only the necessary files for running the app
+COPY --from=builder /app/build ./build
+COPY --from=builder /app/package.json .
+
+# Install only production dependencies
+RUN corepack enable && \
+    corepack prepare pnpm@latest --activate && \
+    pnpm install --prod --frozen-lockfile
+
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Run the SSR app with Node.js (start the app in production)
-CMD ["node", "build"]
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOST=0.0.0.0
+
+# Start the application
+CMD ["node", "./build"]
