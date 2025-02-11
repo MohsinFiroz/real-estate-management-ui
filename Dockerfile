@@ -1,8 +1,8 @@
 # Build stage
 FROM node:20-alpine AS builder
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Install pnpm (using npm instead of corepack)
+RUN npm install -g pnpm
 
 WORKDIR /app
 
@@ -27,9 +27,8 @@ WORKDIR /app
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/package.json .
 
-# Install only production dependencies
-RUN corepack enable && \
-    corepack prepare pnpm@latest --activate && \
+# Install pnpm and production dependencies
+RUN npm install -g pnpm && \
     pnpm install --prod --frozen-lockfile
 
 # Expose the port the app runs on
