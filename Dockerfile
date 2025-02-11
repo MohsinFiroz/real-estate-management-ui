@@ -1,43 +1,52 @@
 # Build stage
 FROM node:20-alpine AS builder
 
-# Install pnpm (using npm instead of corepack)
-RUN npm install -g pnpm
+# Add build dependencies
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json pnpm-lock.yaml* ./
+# Copy package files first for better caching
+COPY package*.json .
+COPY pnpm-lock.yaml .
 
-# Install dependencies
+# Install pnpm and dependencies
+RUN npm i -g pnpm@latest
 RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
 
-# Build the application
-RUN pnpm build
+# Build the app and prune dependencies
+RUN pnpm run build
+RUN pnpm prune --prod
 
 # Production stage
-FROM node:20-alpine AS production
+FROM node:20-alpine AS deployer
+
+# Add production dependencies
+RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
 
-# Copy only the necessary files for running the app
-COPY --from=builder /app/build ./build
+# Copy built assets and dependencies
+COPY --from=builder /app/build build/
 COPY --from=builder /app/package.json .
-
-# Install pnpm and production dependencies
-RUN npm install -g pnpm && \
-    pnpm install --prod --frozen-lockfile
+COPY --from=builder /app/node_modules node_modules/
 
 # Expose the port the app runs on
 EXPOSE 3000
 
 # Set environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV HOST=0.0.0.0
+ENV NODE_ENV=production \
+    PORT=3000 \
+    HOST=0.0.0.0 \
+    # Add security headers
+    ORIGIN=* \
+    PROTOCOL_HEADER=x-forwarded-proto \
+    HOST_HEADER=x-forwarded-host
 
-# Start the application
+# Use non-root user for better security
+USER node
+
 CMD [ "node", "build" ]
