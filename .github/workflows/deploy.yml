@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           script_stop: true
           script: |
-            bash temp/deployment/scripts/deploy-frontend.sh \
+            bash temp/deployment/scripts/deploy.sh \
               ${{ secrets.DOCKER_SERVER_IP }} \
               ${{ secrets.DOCKER_USER }} \
               ${{ secrets.DOCKER_PASSWORD }} \
