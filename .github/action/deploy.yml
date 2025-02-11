@@ -1,0 +1,89 @@
+name: Deploy Frontend to Docker Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      attestations: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        run: |
+          REPO_NAME=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE_NAME="ghcr.io/$REPO_NAME:latest"
+          docker build -t $IMAGE_NAME -f Dockerfile .
+          docker push $IMAGE_NAME
+
+      - name: Secure Copy Deployment Scripts
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DOCKER_SERVER_IP }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          source: "deployment/scripts/*.sh"
+          target: "~/temp/"
+
+      - name: Secure Copy Nginx Configurations
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DOCKER_SERVER_IP }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          source: "deployment/docker/nginx/conf.d/*.conf"
+          target: "~/temp/"
+
+      - name: Deploy Application
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.DOCKER_SERVER_IP }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          script_stop: true
+          script: |
+            bash temp/deployment/scripts/deploy-frontend.sh \
+              ${{ secrets.DOCKER_SERVER_IP }} \
+              ${{ secrets.DOCKER_USER }} \
+              ${{ secrets.DOCKER_PASSWORD }} \
+              "ghcr.io/${{ github.repository }}:latest"
+      
+      - name: Setup Nginx and Certbot
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.DOCKER_SERVER_IP }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          script_stop: true
+          script: |
+            bash temp/deployment/scripts/setup-nginx.sh
+
+      - name: Cleanup Temporary Directory
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.DOCKER_SERVER_IP }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          script: |
+            rm -rf temp
