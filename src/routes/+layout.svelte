@@ -13,6 +13,7 @@
   let nonActiveClass = 'flex items-center p-2 text-base font-normal text-green-900 rounded-lg dark:text-white hover:bg-green-100 dark:hover:bg-green-700';
   </script>
   
+  <div class="flex flex-col h-screen">
     <!-- Navbar -->
     <Navbar fluid={true} class="border-b">
       <NavBrand href="/">
@@ -45,7 +46,7 @@
   
     <div class="flex flex-1">
       <!-- Sidebar -->
-      <Sidebar {activeUrl} {activeClass} {nonActiveClass}>
+      <Sidebar {activeUrl} {activeClass} {nonActiveClass} class="border-r">
         <SidebarWrapper>
           <SidebarGroup>
             <SidebarItem label="Dashboard" href="/">
@@ -82,4 +83,5 @@
         <slot></slot>
       </main>
     </div>
+  </div>
   
