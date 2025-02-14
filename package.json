@@ -31,5 +31,8 @@
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
+	},
+	"dependencies": {
+		"flowbite-svelte-blocks": "^1.1.4"
 	}
 }
