@@ -3,7 +3,7 @@
     
     async function fetchPage() {
       try {
-        const res = await fetch("https://real-estate-management:80/v1/metrics");
+        const res = await fetch("https://real-estate-management:443/v1/metrics");
         
         if (!res.ok) {
           throw new Error(`Failed to fetch page, status: ${res.status}`);
