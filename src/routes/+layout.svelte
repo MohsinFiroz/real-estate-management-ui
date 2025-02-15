@@ -75,7 +75,20 @@
               </svelte:fragment>
             </SidebarItem>
           </SidebarGroup>
+        
+          <!-- Bottom Metrics Button -->
+          <div class="absolute bottom-4 left-4 group">
+            <a href="/monitor" class="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <ChartPieSolid class="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block whitespace-nowrap z-50">
+                <span class="bg-gray-800 text-white text-xs px-3 py-1.5 rounded shadow-lg">
+                  Server monitor page
+                </span>
+              </div>
+            </a>
+          </div>
         </SidebarWrapper>
+        
       </Sidebar>
   
       <!-- Page content -->
