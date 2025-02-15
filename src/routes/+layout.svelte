@@ -7,7 +7,7 @@
       Sidebar, SidebarGroup, SidebarItem, SidebarWrapper, SidebarDropdownItem, SidebarDropdownWrapper
     } from 'flowbite-svelte';
   
-  import { ChartPieSolid, GridSolid, MailBoxSolid, UserSolid, ArrowRightToBracketOutline, EditOutline } from 'flowbite-svelte-icons';
+  import { ChartPieSolid, GridSolid, MailBoxSolid, UserSolid, ArrowRightToBracketOutline, ServerOutline } from 'flowbite-svelte-icons';
   $: activeUrl =  page.url.pathname
   let activeClass = 'flex items-center p-2 text-base font-normal text-primary-900 bg-primary-200 dark:bg-primary-700 rounded-lg dark:text-white hover:bg-primary-100 dark:hover:bg-gray-700';
   let nonActiveClass = 'flex items-center p-2 text-base font-normal text-green-900 rounded-lg dark:text-white hover:bg-green-100 dark:hover:bg-green-700';
@@ -79,7 +79,8 @@
           <!-- Bottom Metrics Button -->
           <div class="absolute bottom-4 left-4 group">
             <a href="/monitor" class="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <ChartPieSolid class="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              <ServerOutline
+              class="w-6 h-6 text-gray-700 dark:text-gray-300" />
               <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block whitespace-nowrap z-50">
                 <span class="bg-gray-800 text-white text-xs px-3 py-1.5 rounded shadow-lg">
                   Server monitor page
