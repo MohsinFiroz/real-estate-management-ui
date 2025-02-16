@@ -5,5 +5,5 @@
 
 <div>
   <!-- Direct URL for iframe -->
-  <iframe src={iframeUrl} width="100%" height="100%" title="Metrics Page"></iframe>
+  <iframe src={iframeUrl} title="Metrics Page"></iframe>
 </div>
