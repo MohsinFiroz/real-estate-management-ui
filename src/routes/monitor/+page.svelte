@@ -3,7 +3,7 @@
   const iframeUrl = "https://real-estate-management.softcelia.com/v1/metrics";
 </script>
 
-<div class="flex justify-center items-center flex-1 w-full">
+<div class="flex justify-center items-center flex-1 w-full h-full">
   <!-- Direct URL for iframe -->
-  <iframe src={iframeUrl} class="w-full h-full border-none" title="Metrics Page"></iframe>
+  <iframe src={iframeUrl} title="Metrics Page"></iframe>
 </div>
