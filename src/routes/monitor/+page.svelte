@@ -3,10 +3,10 @@
     
     async function fetchPage() {
       try {
-        const res = await fetch("/api/v1/metrics");
+        const res = await fetch("https://real-estate-management.softcelia.com/v1/metrics");
         
         if (!res.ok) {
-          throw new Error(`Failed to fetch page, status: ${res.status}`);
+          throw new Error(`Failed to fetch metrics page, status: ${res.status}`);
         }
         
         pageContent = await res.text();
