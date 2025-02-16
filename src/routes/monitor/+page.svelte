@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
   let pageContent = "";
 
   async function fetchPage() {
@@ -10,39 +8,21 @@
       if (!res.ok) {
         throw new Error(`Failed to fetch metrics page, status: ${res.status}`);
       }
-
-      // Get the raw HTML content
+      
       pageContent = await res.text();
     } catch (error) {
       console.error("Error fetching page:", error);
     }
   }
 
-  // Function to execute any embedded JavaScript in the content
-  function executeScripts() {
-    const scripts = document.querySelectorAll("script");
-
-    scripts.forEach((script) => {
-      const newScript = document.createElement("script");
-      newScript.textContent = script.textContent;
-      document.body.appendChild(newScript); // Execute the script by appending it
-    });
-  }
-
-  onMount(() => {
-    // Fetch the page content when the component mounts
-    fetchPage();
-  });
-
-  // Run the scripts after the page content is set
-  $: if (pageContent) {
-    executeScripts();
-  }
+  // Call fetchPage when the component mounts
+  fetchPage();
 </script>
 
 <div>
+  <!-- Dynamically rendered content inside the iframe -->
   {#if pageContent}
-    {@html pageContent}  <!-- Render HTML content dynamically -->
+    <iframe srcdoc={pageContent} width="100%" height="500px" title="Metrics Page"></iframe>
   {:else}
     <p>Loading...</p>
   {/if}
