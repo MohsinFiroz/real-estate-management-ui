@@ -3,7 +3,7 @@
     
     async function fetchPage() {
       try {
-        const res = await fetch("/_api/v1/metrics");
+        const res = await fetch("/api/v1/metrics");
         
         if (!res.ok) {
           throw new Error(`Failed to fetch page, status: ${res.status}`);
