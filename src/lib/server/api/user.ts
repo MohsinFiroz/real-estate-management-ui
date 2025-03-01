@@ -1,123 +1,120 @@
 import { API_BASE_URL } from '$lib/common/constants';
-import type { User, UserListResponse } from '$lib/types/user';
-import type { UserQueryParams } from '$lib/types/common';
+import type { SearchResponse } from '$lib/types/common';
+import type { User } from '$lib/types/user';
+
 
 /**
- * Server-side function to fetch users with pagination, filtering, and sorting
+ * Fetches users with pagination, search, and sorting
  */
-export async function fetchUsers(
-  fetch: typeof window.fetch,
-  { page = 1, limit = 10, roleFilter = '', statusFilter = '', sortBy = [] }: UserQueryParams
-): Promise<UserListResponse> {
-  const offset = (page - 1) * limit;
-  const sortByParam = sortBy.map(sort => `${sort.field}:${sort.order}`).join(',');
-
-  const url = new URL(`${API_BASE_URL}/v1/users`);
-  url.searchParams.append('offset', offset.toString());
-  url.searchParams.append('limit', limit.toString());
+export async function listUsers(params: {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  sortBy?: string;
+}): Promise<SearchResponse<User>> {
+  const { page = 1, pageSize = 10, searchQuery = '', sortBy = 'createdAt:desc' } = params;
   
-  if (roleFilter) url.searchParams.append('role', roleFilter);
-  if (statusFilter) url.searchParams.append('status', statusFilter);
-  if (sortByParam) url.searchParams.append('sortBy', sortByParam);
+  // Build query string
+  const queryParams = new URLSearchParams();
+  if (page) queryParams.set('page', page.toString());
+  if (pageSize) queryParams.set('pageSize', pageSize.toString());
+  if (searchQuery) queryParams.set('searchQuery', searchQuery);
+  if (sortBy) queryParams.set('sortBy', sortBy);
   
-  const response = await fetch(url.toString(), {
+  const response = await fetch(`${API_BASE_URL}/users?${queryParams.toString()}`, {
     headers: {
-      'Authorization': `Bearer Token` // Using middleware/auth token
-    }
+      'Content-Type': 'application/json',
+      // Add auth header here if needed
+    },
   });
-
+  
   if (!response.ok) {
-    throw new Error(`Failed to fetch users: ${response.statusText}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to fetch users');
   }
   
-  return response.json();
+  const data = await response.json();
+  return data.data as SearchResponse<User>;
 }
 
 /**
- * Server-side function to create a new user
+ * Fetches a single user by ID
  */
-export async function createUser(
-  fetch: typeof window.fetch,
-  user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>
-): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/v1/users`, {
+export async function getUserByID(id: string): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      // Add auth header here if needed
+    },
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to fetch user');
+  }
+  
+  const data = await response.json();
+  return data.data as User;
+}
+
+/**
+ * Creates a new user
+ */
+export async function createUser(userData: Partial<User>): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/users`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 'Authorization': `Bearer Token`
+      // Add auth header here if needed
     },
-    body: JSON.stringify(user)
+    body: JSON.stringify(userData),
   });
-
+  
   if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    throw new Error(`Error creating user: ${error?.message || response.statusText}`);
-  }
-
-  return response.json();
-}
-
-/**
- * Server-side function to update a user
- */
-export async function updateUser(
-  fetch: typeof window.fetch,
-  id: string,
-  userData: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>
-): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/v1/users/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      // 'Authorization': `Bearer Token`
-    },
-    body: JSON.stringify(userData)
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    throw new Error(`Error updating user: ${error?.message || response.statusText}`);
-  }
-
-  return response.json();
-}
-
-/**
- * Server-side function to delete a user
- */
-export async function deleteUser(
-  fetch: typeof window.fetch,
-  id: string
-): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/v1/users/${id}`, {
-    method: 'DELETE',
-    headers: {
-      // 'Authorization': `Bearer Token`
-    }
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => null);
-    throw new Error(`Error deleting user: ${error?.message || response.statusText}`);
-  }
-}
-
-/**
- * Server-side function to get a single user by ID
- */
-export async function getUserByID(
-  fetch: typeof window.fetch,
-  id: string
-): Promise<User> {
-  const response = await fetch(`${API_BASE_URL}/v1/users/${id}`, {
-    headers: {
-      // 'Authorization': `Bearer Token`
-    }
-  });
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user: ${response.statusText}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to create user');
   }
   
-  return response.json();
+  const data = await response.json();
+  return data.data as User;
+}
+
+/**
+ * Updates an existing user
+ */
+export async function updateUser(id: string, userData: Partial<User>): Promise<User> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      // Add auth header here if needed
+    },
+    body: JSON.stringify(userData),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to update user');
+  }
+  
+  const data = await response.json();
+  return data.data as User;
+}
+
+/**
+ * Deletes a user
+ */
+export async function deleteUser(id: string): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/users/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      // Add auth header here if needed
+    },
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || 'Failed to delete user');
+  }
 }

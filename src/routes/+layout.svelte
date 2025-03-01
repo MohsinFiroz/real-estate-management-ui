@@ -76,11 +76,12 @@
             </SidebarItem>
           </SidebarGroup>
         
-          <!-- Bottom Metrics Button -->
-          <div class="absolute bottom-4 left-4 group">
+          <!-- Bottom Buttons -->
+        <div class="absolute bottom-4 left-4 flex flex-wrap gap-2">
+          <!-- Server Monitor Button -->
+          <div class="group">
             <a href="/monitor" class="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-              <ServerOutline
-              class="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              <ServerOutline class="w-6 h-6 text-gray-700 dark:text-gray-300" />
               <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block whitespace-nowrap z-50">
                 <span class="bg-gray-800 text-white text-xs px-3 py-1.5 rounded shadow-lg">
                   Server monitor page
@@ -88,6 +89,20 @@
               </div>
             </a>
           </div>
+
+          <!-- User Button -->
+          <div class="group">
+            <a href="/users" class="block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+              <UserSolid class="w-6 h-6 text-gray-700 dark:text-gray-300" />
+              <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block whitespace-nowrap z-50">
+                <span class="bg-gray-800 text-white text-xs px-3 py-1.5 rounded shadow-lg">
+                  User Management
+                </span>
+              </div>
+            </a>
+          </div>
+        </div>
+
         </SidebarWrapper>
         
       </Sidebar>

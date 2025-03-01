@@ -1,29 +1,17 @@
-export type UserRole = 'admin' | 'user';
+// Define user role type
+export type Role = 'admin' | 'user';
 
-// Constants for roles
-export const RoleAdmin: UserRole = 'admin';
-export const RoleUser: UserRole = 'user';
-
-// User interface representing a user record
+// User model
 export interface User {
   id: string;
   email: string;
-  password: string;
+  password?: string; // Optional as it may not be returned from the API
   firstName: string;
-  lastName: string;
-  phone?: string;
-  role: UserRole;
+  lastName?: string;
+  phone: string;
+  role: Role;
   isActive: boolean;
-  lastLogin?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Response from the API for paginated users list
-export interface UserListResponse {
-  users: User[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  lastLogin: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
 }

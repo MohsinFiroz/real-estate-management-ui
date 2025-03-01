@@ -1,22 +1,22 @@
-export type SortOrder = 'asc' | 'desc';
-
-export interface SortField {
-  field: string;
-  order: SortOrder;
+export interface SearchParams {
+  page?: number;
+  pageSize?: number;
+  searchQuery?: string;
+  sortBy?: string;
 }
 
-export interface PaginationParams {
+// Generic search response interface
+export interface SearchResponse<T> {
+  entities: T[];
+  totalCount: number;
   page: number;
-  limit: number;
+  pageSize: number;
+  totalPages: number;
 }
 
-export interface FilterParams {
-  roleFilter?: string;
-  statusFilter?: string;
+// API response format
+export interface APIResponse<T> {
+  success: boolean;
+  data: T;
+  error?: string;
 }
-
-export interface SortParams {
-  sortBy: SortField[];
-}
-
-export type UserQueryParams = PaginationParams & FilterParams & SortParams;
