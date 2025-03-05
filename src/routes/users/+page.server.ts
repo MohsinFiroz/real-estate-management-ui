@@ -1,18 +1,45 @@
-// src/routes/users/+page.server.ts
-import { listUsers, deleteUser } from '$lib/server/api/user'; // Import deleteUser function
+import { listUsers, deleteUser } from '$lib/server/api/user';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ url }) => {
-  let page = parseInt(url.searchParams.get('page') || '1');
-  let pageSize = parseInt(url.searchParams.get('pageSize') || '10');
-  let searchQuery = url.searchParams.get('searchQuery') || '';
-  let sortBy = url.searchParams.get('sortBy') || 'createdAt:desc';
+// Helper function to parse sorting criteria
+function parseSortCriteria(sortParam: string | null) {
+  return sortParam?.split(',').map(sortItem => {
+    const [field, direction] = sortItem.split(':');
+    return { field, direction: direction === 'desc' ? 'desc' : 'asc' };
+  });
+}
 
-  const listResponse = await listUsers({ page, pageSize, searchQuery, sortBy });
+// Helper function to parse role filters
+function parseRoleFilters(rolesParam: string | null) {
+  return rolesParam ? rolesParam.split(',') : [];
+}
+
+export const load: PageServerLoad = async ({ url }) => {
+  const page = parseInt(url.searchParams.get('page') || '1');
+  const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
+  const searchQuery = url.searchParams.get('searchQuery') || '';
+  const sortParam = url.searchParams.get('sortBy');
+  const rolesParam = url.searchParams.get('roles');
+
+  // Parse sorting and role filters
+  const sortCriteria = parseSortCriteria(sortParam);
+  const roleFilters = parseRoleFilters(rolesParam);
+
+  const sortBy = sortCriteria?.map(s => `${s.field}:${s.direction}`).join(',');
+
+  const listResponse = await listUsers({
+    page,
+    pageSize,
+    searchQuery,
+    sortBy,
+    // roleFilters, // Uncomment if role filter is required for API
+  });
 
   return {
-    listResponse
+    listResponse,
+    sortCriteria,
+    roleFilters
   };
 };
 
@@ -20,15 +47,14 @@ export const load: PageServerLoad = async ({ url }) => {
 export const actions: Actions = {
   deleteUser: async ({ request }) => {
     const formData = new URLSearchParams(await request.text());
-    const userID = formData.get('id'); // Get userId from the form data
+    const userID = formData.get('id');
 
     if (!userID) {
       return { error: 'User ID is required' };
     }
 
     try {
-      await deleteUser(userID); // Call the deleteUser function
-      // Redirect to the users list after successful deletion
+      await deleteUser(userID);
       throw redirect(303, '/users');
     } catch (err) {
       return { error: 'Failed to delete user' };

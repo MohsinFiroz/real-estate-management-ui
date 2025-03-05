@@ -12,7 +12,7 @@ export async function listUsers(params: {
   searchQuery?: string;
   sortBy?: string;
 }): Promise<SearchResponse<User>> {
-  const { page = 1, pageSize = 10, searchQuery = '', sortBy = 'createdAt:desc' } = params;
+  const { page = 1, pageSize = 10, searchQuery = '', sortBy = '' } = params;
   
   // Build query string
   const queryParams = new URLSearchParams();
