@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { Card, Button, Spinner, Badge } from 'flowbite-svelte';
+    import { Card, Button, Badge } from 'flowbite-svelte';
     import { ArrowLeftOutline } from 'flowbite-svelte-icons';
     import { goto } from '$app/navigation';
     import { Modal, Alert } from 'flowbite-svelte';
+  import Spinner from '$lib/components/ui/Spinner.svelte';
     export let data;
     
     let user = data.user;
@@ -53,7 +54,7 @@
   
     {#if loading}
       <div class="flex justify-center my-8">
-        <Spinner size="xl" />
+        <Spinner/>
       </div>
     {:else}
       <Card class="max-w-3xl">
@@ -82,6 +83,11 @@
             <Badge color={user.isActive ? 'green' : 'red'}>
               {user.isActive ? 'Active' : 'Inactive'}
             </Badge>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-gray-500">Updated At</h3>
+            <p>{formatDate(user.updatedAt)}</p>
           </div>
           
           <div>
@@ -113,7 +119,7 @@
         <form method="POST" action="?/deleteUser" class="inline">
           <Button color="red" type="submit" disabled={loading}>
             {#if loading}
-              <Spinner size="sm" class="mr-2" />
+              <Spinner/>
             {/if}
             Yes, delete user
           </Button>

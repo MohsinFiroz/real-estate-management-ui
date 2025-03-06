@@ -19,12 +19,11 @@ export const load: PageServerLoad = async ({ url }) => {
   const page = parseInt(url.searchParams.get('page') || '1');
   const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
   const searchQuery = url.searchParams.get('searchQuery') || '';
+  const isActive = url.searchParams.get('isActive') || '';
   const sortParam = url.searchParams.get('sortBy');
-  const rolesParam = url.searchParams.get('roles');
 
   // Parse sorting and role filters
   const sortCriteria = parseSortCriteria(sortParam);
-  const roleFilters = parseRoleFilters(rolesParam);
 
   const sortBy = sortCriteria?.map(s => `${s.field}:${s.direction}`).join(',');
 
@@ -32,21 +31,20 @@ export const load: PageServerLoad = async ({ url }) => {
     page,
     pageSize,
     searchQuery,
+    isActive,
     sortBy,
-    // roleFilters, // Uncomment if role filter is required for API
   });
 
   return {
     listResponse,
     sortCriteria,
-    roleFilters
   };
 };
 
 // Action to handle user deletion
 export const actions: Actions = {
   deleteUser: async ({ request }) => {
-    const formData = new URLSearchParams(await request.text());
+    const formData = await request.formData();
     const userID = formData.get('id');
 
     if (!userID) {
@@ -54,7 +52,7 @@ export const actions: Actions = {
     }
 
     try {
-      await deleteUser(userID);
+      await deleteUser(userID.toString());
       throw redirect(303, '/users');
     } catch (err) {
       return { error: 'Failed to delete user' };

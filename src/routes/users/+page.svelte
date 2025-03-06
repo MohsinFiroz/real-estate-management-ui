@@ -1,22 +1,67 @@
 <script lang="ts">
-  import { enhance } from '$app/forms';
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
-  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Button, Dropdown, DropdownItem, Checkbox, ButtonGroup } from 'flowbite-svelte';
+  import Spinner from '$lib/components/ui/Spinner.svelte';
+  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Button, Dropdown, DropdownItem, Checkbox, ButtonGroup, Badge, Modal } from 'flowbite-svelte';
   import { PlusOutline, ChevronRightOutline, ChevronLeftOutline, TrashBinSolid, EditSolid, FilterSolid, ArrowUpOutline, ArrowDownOutline } from 'flowbite-svelte-icons';
 
   export let data;
 
   // Reactive states
   let searchTerm = page.url.searchParams.get('searchQuery') || '';
-  let selectedRoles = data.roleFilters || [];
+  let isActiveFilter = page.url.searchParams.get('isActive') || '';
   let sortCriteria = data.sortCriteria || [];
+
+  // Delete
+  let loading = false;
+  let showDeleteModal = false;
+  // Reactive state to store the selected user for deletion
+  let userIDToDelete = '';
+
+  function openDeleteModal(id: string) {
+    userIDToDelete = id;
+    showDeleteModal = true;
+  }
+
+  function closeDeleteModal() {
+    userIDToDelete = '';
+    showDeleteModal = false;
+  }
+
+  async function handleDelete(event: any) {
+    loading = true;
+    // Prevent the default form submission behavior
+    event.preventDefault();
+    
+    try {
+      const formData = new FormData();
+      formData.append('id', userIDToDelete);
+      
+      const response = await fetch('?/deleteUser', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        // Only close the modal after successful deletion
+        showDeleteModal = false;
+        // Refresh the page to show updated user list
+        goto(page.url.pathname, { invalidateAll: true });
+      } else {
+        console.error('Failed to delete user');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    } finally {
+      loading = false;
+    }
+  }
 
   // Update URL based on current state
   function updateUrl() {
     const params = new URLSearchParams();
     if (searchTerm) params.set('searchQuery', searchTerm);
-    if (selectedRoles.length > 0) params.set('roles', selectedRoles.join(','));
+    if (isActiveFilter) params.set('isActive', isActiveFilter);
     if (sortCriteria.length > 0) {
       const sortParam = sortCriteria.map(s => `${s.field}:${s.direction}`).join(',');
       params.set('sortBy', sortParam);
@@ -49,15 +94,13 @@
     return sortCriteria.findIndex(s => s.field === field) + 1;
   }
 
-  // Role filter toggle
-  function toggleRoleFilter(role: string) {
-    selectedRoles = selectedRoles.includes(role) ? selectedRoles.filter(r => r !== role) : [...selectedRoles, role];
-    updateUrl();
-  }
-
-  // Reset role filters
-  function resetRoleFilters() {
-    selectedRoles = [];
+  // Active filter toggle
+  function toggleActiveFilter(value: string) {
+    if (value === 'active') {
+      isActiveFilter = isActiveFilter === 'true' ? '' : 'true';
+    } else if (value === 'inactive') {
+      isActiveFilter = isActiveFilter === 'false' ? '' : 'false';
+    }
     updateUrl();
   }
 
@@ -67,8 +110,6 @@
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(updateUrl, 500) as unknown as number;
   }
-
-  const allRoles = ['admin', 'user'];
 
   // Date formatting
   function formatDate(dateString: string | null | undefined): string {
@@ -105,18 +146,27 @@
         on:input={handleSearchInput}
       />
       <div class="relative">
-        <Button>Filter Roles
-          {#if selectedRoles.length > 0}
-            <span class="ml-2 bg-blue-500 text-white rounded-full px-2 py-0.5 text-xs">{selectedRoles.length}</span>
+        <Button>Filter
+          {#if isActiveFilter}
+            <span class="ml-2 bg-blue-500 text-white rounded-full px-2 py-0.5 text-xs">{isActiveFilter === 'true' ? 'Active' : 'Inactive'}</span>
           {/if}
           <FilterSolid class="w-4 h-4 ml-2" />
         </Button>
         <Dropdown class="w-44 p-3 space-y-3 text-sm">
-          {#each allRoles as role}
-            <li><Checkbox checked={selectedRoles.includes(role)} on:change={() => toggleRoleFilter(role)}>{role.charAt(0).toUpperCase() + role.slice(1)}</Checkbox></li>
-          {/each}
+          <li>
+            <Checkbox checked={isActiveFilter === 'true'} on:change={() => toggleActiveFilter('active')}>
+              Active Users
+            </Checkbox>
+          </li>
+          <li>
+            <Checkbox checked={isActiveFilter === 'false'} on:change={() => toggleActiveFilter('inactive')}>
+              Inactive Users
+            </Checkbox>
+          </li>
           <li class="border-t pt-2 flex justify-between">
-            <Button size="xs" color="alternative" on:click={resetRoleFilters}>Reset</Button>
+            <Button size="xs" color="alternative" on:click={() => { isActiveFilter = ''; updateUrl(); }} >
+              Reset
+            </Button>
           </li>
         </Dropdown>
       </div>
@@ -159,19 +209,24 @@
               <TableBodyRow class="cursor-pointer hover:bg-gray-100" on:click={() => goto(`/users/${user.id}`)}>
                 <TableBodyCell>{user.firstName} {user.lastName || ''}</TableBodyCell>
                 <TableBodyCell>{user.email}</TableBodyCell>
-                <TableBodyCell>{user.role}</TableBodyCell>
-                <TableBodyCell><span class={user.isActive ? 'text-green-600' : 'text-red-600'}>{user.isActive ? 'Active' : 'Inactive'}</span></TableBodyCell>
+                <TableBodyCell>
+                  <Badge color={user.role === 'admin' ? 'purple' : 'blue'}>
+                    {user.role}
+                  </Badge>
+                </TableBodyCell>
+                <TableBodyCell>
+                  <Badge color={user.isActive ? 'green' : 'red'}>
+                    {user.isActive ? 'Active' : 'Inactive'}
+                  </Badge>
+                </TableBodyCell>
                 <TableBodyCell>{formatDate(user.updatedAt)}</TableBodyCell>
                 <TableBodyCell>{formatDate(user.lastLogin)}</TableBodyCell>
                 <TableBodyCell>
                   <div class="flex space-x-2">
                     <Button href={`/users/${user.id}/edit`} color="yellow" size="xs" on:click={(e) => { e.stopPropagation(); goto(`/users/${user.id}/edit`); }}><EditSolid class="w-3 h-3" /></Button>
-                    <form method="POST" action="?/deleteUser" use:enhance>
-                      <input type="hidden" name="id" value={user.id} />
-                      <Button color="red" size="xs" type="submit" on:click={(e) => { e.stopPropagation(); }}><TrashBinSolid class="w-3 h-3" /></Button>
-                    </form>
+                    <Button color="red" size="xs" on:click={(e) => { e.stopPropagation(); openDeleteModal(user.id); }}><TrashBinSolid class="w-3 h-3" /></Button>
                   </div>
-                </TableBodyCell>
+                </TableBodyCell>  
               </TableBodyRow>
             {/each}
           {/if}
@@ -185,18 +240,38 @@
         {Math.min(data.listResponse.page * data.listResponse.pageSize, data.listResponse.totalCount)} of {data.listResponse.totalCount}
       </span>
       <ButtonGroup>
-        <Button href={`?page=${data.listResponse.page - 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${selectedRoles.length > 0 ? `&roles=${selectedRoles.join(',')}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={data.listResponse.page === 1}>
+        <Button href={`?page=${data.listResponse.page - 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={data.listResponse.page === 1}>
           <ChevronLeftOutline size='xs' class='m-1.5'/>
         </Button>
         {#each { length: data.listResponse.totalPages } as _, i (i)}
-          <Button href={`?page=${i + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${selectedRoles.length > 0 ? `&roles=${selectedRoles.join(',')}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} color={data.listResponse.page === i + 1 ? 'primary' : 'alternative'}>
+          <Button href={`?page=${i + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`}>
             {i + 1}
           </Button>
         {/each}
-        <Button href={`?page=${data.listResponse.page + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${selectedRoles.length > 0 ? `&roles=${selectedRoles.join(',')}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={data.listResponse.page === data.listResponse.totalPages}>
+        <Button href={`?page=${data.listResponse.page + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={data.listResponse.page === data.listResponse.totalPages}>
           <ChevronRightOutline size='xs' class='m-1.5'/>
         </Button>
       </ButtonGroup>
     </div>
   </div>
 </div>
+
+<!-- Modified Modal to prevent auto-closing -->
+<Modal bind:open={showDeleteModal} size="md" autoclose={false}>
+  <div class="text-center">
+    <h3 class="mb-5 text-lg font-normal text-gray-500">
+      Are you sure you want to delete this user?
+    </h3>
+    <div class="flex justify-center gap-4">
+      <!-- Changed to use the custom handler instead of form action -->
+      <Button color="red" on:click={handleDelete} disabled={loading}>
+        {#if loading}
+          <Spinner/>
+        {:else}
+          Yes, delete user
+        {/if}
+      </Button>
+      <Button color="light" on:click={closeDeleteModal}>No, cancel</Button>
+    </div>
+  </div>
+</Modal>

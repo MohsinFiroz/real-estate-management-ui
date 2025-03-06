@@ -10,15 +10,17 @@ export async function listUsers(params: {
   page?: number;
   pageSize?: number;
   searchQuery?: string;
+  isActive?: string;
   sortBy?: string;
 }): Promise<SearchResponse<User>> {
-  const { page = 1, pageSize = 10, searchQuery = '', sortBy = '' } = params;
+  const { page = 1, pageSize = 10, searchQuery = '', isActive = '', sortBy = '' } = params;
   
   // Build query string
   const queryParams = new URLSearchParams();
   if (page) queryParams.set('page', page.toString());
   if (pageSize) queryParams.set('pageSize', pageSize.toString());
   if (searchQuery) queryParams.set('searchQuery', searchQuery);
+  if (isActive) queryParams.set('isActive', isActive);
   if (sortBy) queryParams.set('sortBy', sortBy);
   
   const response = await fetch(`${API_BASE_URL}/users?${queryParams.toString()}`, {

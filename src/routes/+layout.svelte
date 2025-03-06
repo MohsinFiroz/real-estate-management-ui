@@ -31,12 +31,12 @@
     </div>
     <Dropdown placement="bottom" triggeredBy="#avatar-menu">
       <DropdownHeader>
-        <span class="block text-sm">Bonnie Green</span>
-        <span class="block truncate text-sm font-medium">name@flowbite.com</span>
+        <span class="block text-sm">Ruhul Amin</span>
+        <span class="block truncate text-sm font-medium">ruhul@softcelia.com</span>
       </DropdownHeader>
       <DropdownItem>Dashboard</DropdownItem>
       <DropdownItem>Settings</DropdownItem>
-      <DropdownItem>Earnings</DropdownItem>
+      <DropdownItem>Tasks</DropdownItem>
       <DropdownDivider />
       <DropdownItem>Sign out</DropdownItem>
     </Dropdown>
