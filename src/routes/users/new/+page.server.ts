@@ -1,9 +1,11 @@
 import type { Actions } from "./$types";
 import { userAPI } from "$lib/server/api/user";
 import type { Role, User } from "$lib/types/user";
+import type { APIResponse } from "$lib/types/common";
+import { fail } from '@sveltejs/kit';
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+  createUser: async ({ request }) => {
     const formData = await request.formData();
 
     // Extract form values
@@ -26,6 +28,6 @@ export const actions: Actions = {
       isActive,
     };
 
-    return await userAPI.createUser(userData);
+    return await userAPI.createUser(userData);      
   },
 };

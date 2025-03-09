@@ -2,12 +2,14 @@
   import { goto } from '$app/navigation';
   import { page } from '$app/state';
   import Spinner from '$lib/components/ui/Spinner.svelte';
+  import type { SearchResponse } from '$lib/types/common.js';
+  import type { User } from '$lib/types/user.js';
   import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, Button, Dropdown, DropdownItem, Checkbox, ButtonGroup, Badge, Modal } from 'flowbite-svelte';
   import { PlusOutline, ChevronRightOutline, ChevronLeftOutline, TrashBinSolid, EditSolid, FilterSolid, ArrowUpOutline, ArrowDownOutline } from 'flowbite-svelte-icons';
 
   export let data;
 
-  let userList = data.listResponse
+  $: userList = data.listResponse.data as SearchResponse<User>
 
   // Reactive states
   let searchTerm = page.url.searchParams.get('searchQuery') || '';
@@ -202,7 +204,7 @@
           <TableHeadCell>Actions</TableHeadCell>
         </TableHead>
         <TableBody>
-          {#if userList.totalCount === 0}
+          {#if userList?.totalCount === 0}
             <TableBodyRow>
               <TableBodyCell colspan={7} class="text-center py-4 text-gray-500">No data found</TableBodyCell>
             </TableBodyRow>

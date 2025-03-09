@@ -17,6 +17,7 @@ export interface SearchResponse<T> {
 // API response format
 export interface APIResponse<T> {
   success: boolean;
-  data: T;
+  data: T | null;
   error?: string;
+  statusCode?: number;
 }
