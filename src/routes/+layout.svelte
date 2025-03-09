@@ -6,6 +6,7 @@
     DropdownHeader, DropdownItem, DropdownDivider
   } from 'flowbite-svelte';
   import { ChartPieSolid, GridSolid, UserSolid, ServerOutline, HomeSolid, HammerSolid, ReceiptSolid, SearchSolid, UsersSolid } from 'flowbite-svelte-icons';
+  import ToastContainer from "$lib/components/ui/ToastContainer.svelte";
 
   $: activeUrl = page.url.pathname;
 
@@ -121,6 +122,8 @@
     <!-- Page content -->
     <main class="p-4 flex-1 overflow-auto">
       <slot></slot>
+      <!-- <Toast /> -->
+      <ToastContainer/>
     </main>
   </div>
 </div>

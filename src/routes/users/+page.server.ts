@@ -1,4 +1,4 @@
-import { listUsers, deleteUser } from '$lib/server/api/user';
+import { userAPI } from '$lib/server/api/user';
 import { redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ url }) => {
 
   const sortBy = sortCriteria?.map(s => `${s.field}:${s.direction}`).join(',');
 
-  const listResponse = await listUsers({
+  const listResponse = await userAPI.listUsers({
     page,
     pageSize,
     searchQuery,
@@ -52,7 +52,7 @@ export const actions: Actions = {
     }
 
     try {
-      await deleteUser(userID.toString());
+      await userAPI.deleteUser(userID.toString());
       throw redirect(303, '/users');
     } catch (err) {
       return { error: 'Failed to delete user' };

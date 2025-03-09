@@ -7,6 +7,8 @@
 
   export let data;
 
+  let userList = data.listResponse
+
   // Reactive states
   let searchTerm = page.url.searchParams.get('searchQuery') || '';
   let isActiveFilter = page.url.searchParams.get('isActive') || '';
@@ -66,7 +68,7 @@
       const sortParam = sortCriteria.map(s => `${s.field}:${s.direction}`).join(',');
       params.set('sortBy', sortParam);
     }
-    params.set('page', data.listResponse.page.toString());
+    params.set('page', userList.page.toString());
     goto(`?${params.toString()}`, { keepFocus: true });
   }
 
@@ -200,12 +202,12 @@
           <TableHeadCell>Actions</TableHeadCell>
         </TableHead>
         <TableBody>
-          {#if data.listResponse.entities.length === 0}
+          {#if userList.totalCount === 0}
             <TableBodyRow>
               <TableBodyCell colspan={7} class="text-center py-4 text-gray-500">No data found</TableBodyCell>
             </TableBodyRow>
           {:else}
-            {#each data.listResponse.entities as user (user.id)}
+            {#each userList.entities as user (user.id)}
               <TableBodyRow class="cursor-pointer hover:bg-gray-100" on:click={() => goto(`/users/${user.id}`)}>
                 <TableBodyCell>{user.firstName} {user.lastName || ''}</TableBodyCell>
                 <TableBodyCell>{user.email}</TableBodyCell>
@@ -236,19 +238,19 @@
 
     <div class="flex justify-between items-center mt-4">
       <span class="text-sm text-gray-600">
-        Showing {((data.listResponse.page - 1) * data.listResponse.pageSize) + 1}- 
-        {Math.min(data.listResponse.page * data.listResponse.pageSize, data.listResponse.totalCount)} of {data.listResponse.totalCount}
+        Showing {((userList.page - 1) * userList.pageSize) + 1}- 
+        {Math.min(userList.page * userList.pageSize, userList.totalCount)} of {userList.totalCount}
       </span>
       <ButtonGroup>
-        <Button href={`?page=${data.listResponse.page - 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={data.listResponse.page === 1}>
+        <Button href={`?page=${userList.page - 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={userList.page === 1}>
           <ChevronLeftOutline size='xs' class='m-1.5'/>
         </Button>
-        {#each { length: data.listResponse.totalPages } as _, i (i)}
+        {#each { length: userList.totalPages } as _, i (i)}
           <Button href={`?page=${i + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`}>
             {i + 1}
           </Button>
         {/each}
-        <Button href={`?page=${data.listResponse.page + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={data.listResponse.page === data.listResponse.totalPages}>
+        <Button href={`?page=${userList.page + 1}${searchTerm ? `&searchQuery=${searchTerm}` : ''}${isActiveFilter ? `&isActive=${isActiveFilter}` : ''}${sortCriteria.length > 0 ? `&sort=${sortCriteria.map(s => `${s.field}:${s.direction}`).join(',')}` : ''}`} disabled={userList.page === userList.totalPages}>
           <ChevronRightOutline size='xs' class='m-1.5'/>
         </Button>
       </ButtonGroup>

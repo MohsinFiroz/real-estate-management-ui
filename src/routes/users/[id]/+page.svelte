@@ -6,7 +6,7 @@
   import Spinner from '$lib/components/ui/Spinner.svelte';
     export let data;
     
-    let user = data.user;
+    let user = data.userResponse;
     let loading = false;
     let error = '';
     let showDeleteModal = false;
