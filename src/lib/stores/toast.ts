@@ -1,4 +1,3 @@
-// toast.ts
 import { writable } from 'svelte/store';
 import { slide } from 'svelte/transition';
 
@@ -87,7 +86,7 @@ class Toast {
       console.warn('Toast message is empty');
       return;
     }
-
+    
     // Get default config based on type
     const typeDefaults = DEFAULT_CONFIG[this._type];
     
@@ -96,12 +95,16 @@ class Toast {
       id: generateId(),
       type: this._type,
       message: this._message,
-      code: this._code,
       autoDismiss: this._autoDismiss ?? typeDefaults.autoDismiss,
       dismissTime: this._dismissTime ?? typeDefaults.dismissTime,
       timestamp: Date.now()
     };
-
+    
+    // Only add code property if it's defined
+    if (this._code !== undefined) {
+      toast.code = this._code;
+    }
+    
     // Add to store
     toastsStore.update(toasts => [...toasts, toast]);
     
@@ -111,6 +114,13 @@ class Toast {
         this.dismiss(toast.id);
       }, toast.dismissTime * 1000);
     }
+    
+    // Reset the internal state after creating a toast
+    this._message = '';
+    this._code = undefined;
+    this._autoDismiss = undefined;
+    this._dismissTime = undefined;
+    this._type = 'info';
   }
 
   // Clear a specific toast by id

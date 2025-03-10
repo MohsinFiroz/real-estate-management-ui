@@ -7,6 +7,7 @@
   } from 'flowbite-svelte';
   import { ChartPieSolid, GridSolid, UserSolid, ServerOutline, HomeSolid, HammerSolid, ReceiptSolid, SearchSolid, UsersSolid } from 'flowbite-svelte-icons';
   import ToastContainer from "$lib/components/ui/ToastContainer.svelte";
+  import AlertContainer from "$lib/components/ui/AlertContainer.svelte";
 
   $: activeUrl = page.url.pathname;
 
@@ -121,6 +122,9 @@
 
     <!-- Page content -->
     <main class="p-4 flex-1 overflow-auto">
+      <!-- <Alert /> -->
+      <AlertContainer />
+      <!-- <Page /> -->
       <slot></slot>
       <!-- <Toast /> -->
       <ToastContainer/>
