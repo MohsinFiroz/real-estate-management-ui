@@ -3,9 +3,11 @@
   import { ArrowLeftOutline } from 'flowbite-svelte-icons';
   import { goto } from '$app/navigation';
   import { enhance } from '$app/forms';
+  import type { User } from '$lib/types/user.js';
 
   export let data;
-  let { user } = data;
+  let response = data.user;
+  let user = response.data as User
   let success = false;
   let error = '';
 

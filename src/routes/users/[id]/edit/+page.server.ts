@@ -1,4 +1,4 @@
-import { getUserByID, updateUser } from '$lib/server/api/user';
+import { userAPI } from '$lib/server/api/user';
 import { error, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from '../$types';
 import type { Role, User } from '$lib/types/user';
@@ -6,7 +6,7 @@ import type { Role, User } from '$lib/types/user';
 export const load: PageServerLoad = async ({ params }) => {
   try {
     const userID = params.id;
-    const user = await getUserByID(userID);
+    const user = await userAPI.getUserByID(userID);
 
     return { user };
   } catch (err) {
@@ -30,11 +30,7 @@ export const actions: Actions = {
       isActive: formData.get('isActive') === 'on' // Convert checkbox to boolean
     };
 
-    try {
-      await updateUser(userID, updatedData);
-      throw redirect(303, '/users'); // Redirect to users list after successful update
-    } catch (err) {
-      return { error: 'Failed to update user' };
-    }
+    return userAPI.updateUser(userID, updatedData);
+
   }
 };
