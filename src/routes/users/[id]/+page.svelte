@@ -40,7 +40,7 @@
   
   return async ({ result }) => {
     loading = false;
-
+    
     if (result.type === "redirect") {
       goto(result.location);
       return;
@@ -126,7 +126,7 @@
   {/if}
 </div>
 
-<Modal bind:open={showDeleteModal} size="md" autoclose>
+<Modal bind:open={showDeleteModal} size="md">
   <div class="text-center">
     <h3 class="mb-5 text-lg font-normal text-gray-500">
       Are you sure you want to delete this user?

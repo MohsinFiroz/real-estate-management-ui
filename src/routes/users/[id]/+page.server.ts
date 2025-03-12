@@ -1,5 +1,5 @@
 import { userAPI } from '$lib/server/api/user';
-import { error } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -20,14 +20,24 @@ export const load: PageServerLoad = async ({ params }) => {
 // Action to handle user deletion
 export const actions: Actions = {
   deleteUser: async ({ request }) => {
-    console.log("hjjkhjkhjh")
+    console.log("Delete user action triggered");
 
     const formData = await request.formData();
     const userID = formData.get('id');
 
     if (!userID) {
-      return { error: 'User ID is required' };
+      return { success: false, error: 'User ID is required' };
     }
-    return userAPI.deleteUser(userID.toString());
+    
+    try {
+      const result = await userAPI.deleteUser(userID.toString());
+      console.log("Delete API result:", result);
+      
+      // Redirect after successful deletion
+      throw redirect(303, '/users');
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      return { success: false, error: 'Failed to delete user' };
+    }
   }
 };
