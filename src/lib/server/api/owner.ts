@@ -1,9 +1,10 @@
 import type { APIResponse, SearchResponse } from "$lib/types/common";
-import type { User } from "$lib/types/user";
+import type { Owner } from "$lib/types/owner";
+import { json } from "@sveltejs/kit";
 import { BaseAPI } from "./base";
 
-export class UserAPI extends BaseAPI {
-  private endpoint = "/users";
+export class OwnerAPI extends BaseAPI {
+  private endpoint = "/owners";
 
   /**
    * Fetches users with pagination, search, and sorting
@@ -14,35 +15,34 @@ export class UserAPI extends BaseAPI {
     searchQuery?: string;
     isActive?: string;
     sortBy?: string;
-  }): Promise<APIResponse<SearchResponse<User>>> {
+  }): Promise<APIResponse<SearchResponse<Owner>>> {
     const url = this.createUrl(this.endpoint, {
       page: params.page || 1,
       pageSize: params.pageSize || 10,
       searchQuery: params.searchQuery || "",
-      isActive: params.isActive || "",
       sortBy: params.sortBy || "",
     });
 
-    const response = await fetch(url, this.createFetchOptions());
-    return await this.handleResponse<SearchResponse<User>>(response);
+    const response = await fetch(url, this.createFetchOptions());    
+    return await this.handleResponse<SearchResponse<Owner>>(response);
   }
 
   /**
    * Fetches a single user by ID
    */
-  async getByID(id: string): Promise<APIResponse<User>> {
+  async getByID(id: string): Promise<APIResponse<Owner>> {
     const url = this.createUrl(`${this.endpoint}/${id}`);
     const response = await fetch(url, this.createFetchOptions());
-    return await this.handleResponse<User>(response);
+    return await this.handleResponse<Owner>(response);
   }
 
   /**
    * Creates a new user
    */
-  async create(userData: Partial<User>): Promise<APIResponse<User>> {
+  async create(userData: Partial<Owner>): Promise<APIResponse<Owner>> {
     const url = this.createUrl(this.endpoint);
     const response = await fetch(url, this.createFetchOptions("POST", userData));
-    return await this.handleResponse<User>(response);
+    return await this.handleResponse<Owner>(response);
   }
 
   /**
@@ -50,11 +50,11 @@ export class UserAPI extends BaseAPI {
    */
   async update(
     id: string,
-    userData: Partial<User>
-  ): Promise<APIResponse<User>> {
+    userData: Partial<Owner>
+  ): Promise<APIResponse<Owner>> {
     const url = this.createUrl(`${this.endpoint}/${id}`);
     const response = await fetch(url, this.createFetchOptions("PUT", userData));
-    return await this.handleResponse<User>(response);
+    return await this.handleResponse<Owner>(response);
   }
 
   /**
@@ -67,4 +67,4 @@ export class UserAPI extends BaseAPI {
   }
 }
 
-export const userAPI = new UserAPI();
+export const ownerAPI = new OwnerAPI();

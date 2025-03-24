@@ -24,8 +24,7 @@
   <!-- Navbar -->
   <Navbar fluid={true} class="border-b">
     <NavBrand href="/">
-      <img src="https://fakeimg.pl/250x250/ededed/4f4b61?text=REM&font=museo&font_size=100" class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
-      <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Real Estate Management</span>
+      <img src="/logo.jpeg" class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
     </NavBrand>
 
     <div class="flex items-center md:order-2">
@@ -88,6 +87,11 @@
             </svelte:fragment>
           </SidebarItem>
           <SidebarItem label="Owners" href="/owners">
+            <svelte:fragment slot="icon">
+              <UsersSolid class="w-6 h-6" />
+            </svelte:fragment>
+          </SidebarItem>
+          <SidebarItem label="Tetants" href="/tenants">
             <svelte:fragment slot="icon">
               <UsersSolid class="w-6 h-6" />
             </svelte:fragment>

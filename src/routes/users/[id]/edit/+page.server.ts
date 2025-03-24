@@ -6,7 +6,7 @@ import type { Role, User } from '$lib/types/user';
 export const load: PageServerLoad = async ({ params }) => {
   try {
     const userID = params.id;
-    const user = await userAPI.getUserByID(userID);
+    const user = await userAPI.getByID(userID);
 
     return { user };
   } catch (err) {
@@ -30,7 +30,7 @@ export const actions: Actions = {
       isActive: formData.get('isActive') === 'on' // Convert checkbox to boolean
     };
 
-    return userAPI.updateUser(userID, updatedData);
+    return userAPI.update(userID, updatedData);
 
   }
 };

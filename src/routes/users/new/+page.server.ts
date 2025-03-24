@@ -28,6 +28,6 @@ export const actions: Actions = {
       isActive,
     };
 
-    return await userAPI.createUser(userData);      
+    return await userAPI.create(userData);      
   },
 };

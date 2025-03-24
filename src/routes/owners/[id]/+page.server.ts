@@ -1,43 +1,41 @@
-import { userAPI } from '$lib/server/api/user';
+import { ownerAPI } from '$lib/server/api/owner';
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
   try {
-    const userID = params.id;
-    const userResponse = await userAPI.getByID(userID);
+    const ownerID = params.id;
+    const ownerResponse = await ownerAPI.getByID(ownerID);
 
     return {
-      userResponse
+      ownerResponse
     };
   } catch (err) {
     throw error(404, {
-      message: 'User not found'
+      message: 'Owner not found'
     });
   }
 };
 
 // Action to handle user deletion
 export const actions: Actions = {
-  deleteUser: async ({ request }) => {
-    console.log("Delete user action triggered");
-
+  delete: async ({ request }) => {
     const formData = await request.formData();
     const userID = formData.get('id');
 
     if (!userID) {
-      return { success: false, error: 'User ID is required' };
+      return { success: false, error: 'Owner ID is required' };
     }
     
     try {
-      const result = await userAPI.delete(userID.toString());
+      const result = await ownerAPI.delete(userID.toString());
       console.log("Delete API result:", result);
       
       // Redirect after successful deletion
-      throw redirect(303, '/users');
+      throw redirect(303, '/owners');
     } catch (err) {
-      console.error("Error deleting user:", err);
-      return { success: false, error: 'Failed to delete user' };
+      console.error("Error deleting owner:", err);
+      return { success: false, error: 'Failed to delete owner' };
     }
   }
 };
