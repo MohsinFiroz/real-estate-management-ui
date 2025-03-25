@@ -15,7 +15,7 @@ export class BaseAPI {
     try {
       const data = await response.json();
       data.statusCode = response.status
-      return data;
+      return data;      
     } catch {
       return { success: false, error: 'Failed to parse API response', statusCode: response.status, data: null };
     }

@@ -165,7 +165,7 @@
             </TableBodyRow>
           {:else}
             {#each ownerList.entities as owner (owner.id)}
-              <TableBodyRow>
+              <TableBodyRow class="cursor-pointer hover:bg-gray-100" on:click={() => goto(`/owners/${owner.id}`)}>
                 <TableBodyCell>{owner.name}</TableBodyCell>
                 <TableBodyCell>{owner.mobile}</TableBodyCell>
                 <TableBodyCell>{owner.email}</TableBodyCell>

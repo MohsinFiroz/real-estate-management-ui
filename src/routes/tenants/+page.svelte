@@ -164,7 +164,7 @@
             </TableBodyRow>
           {:else}
             {#each tenantList.entities as tenant (tenant.id)}
-              <TableBodyRow>
+              <TableBodyRow class="cursor-pointer hover:bg-gray-100" on:click={() => goto(`/tenants/${tenant.id}`)}>
                 <TableBodyCell>{tenant.name}</TableBodyCell>
                 <TableBodyCell>{tenant.mobile}</TableBodyCell>
                 <TableBodyCell>{tenant.email}</TableBodyCell>

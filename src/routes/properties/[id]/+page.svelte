@@ -13,6 +13,8 @@
   export let data;
   
   let response = data.propertyResponse;
+  console.log(response);
+  
   let property = response.data as Property;
   let loading = false;
   let showDeleteModal = false;
