@@ -29,8 +29,7 @@ export const actions: Actions = {
       accountNumber,
       bsb,
       identification,
-      address,
-      notes
+      address
     };
 
     try {

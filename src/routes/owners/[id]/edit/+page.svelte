@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Card, Button, Spinner, Label, Input, Select, Checkbox } from 'flowbite-svelte';
+  import { Card, Button, Spinner, Label, Input, Select, Checkbox, Badge } from 'flowbite-svelte';
   import { ArrowLeftOutline } from 'flowbite-svelte-icons';
   import { goto } from '$app/navigation';
   import { toast } from '$lib/stores/toast';
@@ -108,8 +108,16 @@
         </div>
 
         <div>
-          <Label for="notes" class="mb-2">Notes</Label>
-          <Input id="notes" name="notes" bind:value={owner.notes} />
+          <Label for="isActive" class="mb-2">Status *</Label>
+          <div class="flex items-center gap-3">
+            <Select id="isActive" name="isActive" bind:value={owner.isActive} class="w-full">
+              <option value={true}>Active</option>
+              <option value={false}>Inactive</option>
+            </Select>
+            <Badge color={owner.isActive ? "green" : "red"} class="whitespace-nowrap">
+              {owner.isActive ? "Active" : "Inactive"}
+            </Badge>
+          </div>
         </div>
       </div>
 

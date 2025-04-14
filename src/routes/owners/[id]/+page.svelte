@@ -112,6 +112,13 @@
         </div>
 
         <div>
+          <h3 class="text-sm font-medium text-gray-500">Status</h3>
+          <Badge color={owner.isActive ? "green" : "red"}>
+            {owner.isActive ? "Active" : "Inactive"}
+          </Badge>
+        </div>
+
+        <div>
           <h3 class="text-sm font-medium text-gray-500">Created At</h3>
           <p>{formatDate(owner.createdAt)}</p>
         </div>

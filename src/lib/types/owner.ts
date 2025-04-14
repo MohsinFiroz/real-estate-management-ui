@@ -9,7 +9,7 @@ export interface Owner {
     bsb: string;
     identification: string;
     address: string;
-    notes: string;
+    isActive: boolean;
     createdAt: string | null;
     updatedAt: string | null;
   }
