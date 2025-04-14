@@ -23,7 +23,6 @@
     bsb: "",
     identification: "",
     address: "",
-    notes: "",
   };
 
   let loading = false;
@@ -121,11 +120,6 @@
         <div>
           <Label for="address" class="mb-2">Address</Label>
           <Input id="address" name="address" bind:value={ownerData.address} />
-        </div>
-
-        <div>
-          <Label for="notes" class="mb-2">Notes</Label>
-          <Input id="notes" name="notes" bind:value={ownerData.notes} />
         </div>
       </div>
 
