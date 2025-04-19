@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Card, Button, Badge } from "flowbite-svelte";
   import { ArrowLeftOutline } from "flowbite-svelte-icons";
+  import { ChatLeft, Wechat, Whatsapp } from "svelte-bootstrap-icons";
   import { goto } from "$app/navigation";
   import { Modal, Alert } from "flowbite-svelte";
   import Spinner from "$lib/components/ui/Spinner.svelte";
@@ -8,6 +9,7 @@
   import { toast } from "$lib/stores/toast.js";
   import type { SubmitFunction } from "@sveltejs/kit";
   import type { Owner } from "$lib/types/owner.js";
+  import { getCommunicationDetails } from "$lib/types/option.js";
 
   export let data;
   
@@ -15,7 +17,7 @@
   let owner = response.data as Owner;
   let loading = false;
   let showDeleteModal = false;
-
+  
   function formatDate(dateString: string | null) {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleString();
@@ -88,8 +90,19 @@
 
         <div>
           <h3 class="text-sm font-medium text-gray-500">Communication Medium</h3>
-          <p>{owner.communicationMedium}</p>
+          {#if owner.communicationMedium}
+            {@const commDetails = getCommunicationDetails(owner.communicationMedium)}
+            <div class="flex items-center gap-2 mt-1">
+              <Badge color={commDetails?.color} class="flex items-center gap-1 px-2.5 py-1">
+                <svelte:component this={commDetails?.icon} class="w-4 h-4" />
+                {owner.communicationMedium}
+              </Badge>
+            </div>
+          {:else}
+            <p>Not specified</p>
+          {/if}
         </div>
+        
         <div>
           <h3 class="text-sm font-medium text-gray-500">Insurance</h3>
           <p>{owner.insurance}</p>

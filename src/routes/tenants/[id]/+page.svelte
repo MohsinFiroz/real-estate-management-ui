@@ -9,6 +9,7 @@
   import type { APIResponse } from "$lib/types/common.js";
   import { toast } from "$lib/stores/toast.js";
   import type { SubmitFunction } from "@sveltejs/kit";
+  import { getCommunicationDetails } from "$lib/types/option.js";
 
   export let data;
   
@@ -89,9 +90,17 @@
 
         <div>
           <h3 class="text-sm font-medium text-gray-500">Communication Medium</h3>
-          <Badge color="blue">
-            {tenant.communicationMedium}
-          </Badge>
+          {#if tenant.communicationMedium}
+            {@const commDetails = getCommunicationDetails(tenant.communicationMedium)}
+            <div class="flex items-center gap-2 mt-1">
+              <Badge color={commDetails?.color} class="flex items-center gap-1 px-2.5 py-1">
+                <svelte:component this={commDetails?.icon} class="w-4 h-4" />
+                {tenant.communicationMedium}
+              </Badge>
+            </div>
+          {:else}
+            <p>Not specified</p>
+          {/if}
         </div>
 
         <div>

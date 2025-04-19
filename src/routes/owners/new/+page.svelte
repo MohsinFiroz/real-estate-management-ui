@@ -5,6 +5,7 @@
     Spinner,
     Label,
     Input,
+    Select,
   } from "flowbite-svelte";
   import { ArrowLeftOutline } from "flowbite-svelte-icons";
   import { goto } from "$app/navigation";
@@ -12,6 +13,7 @@
   import { enhance } from "$app/forms";
   import type { SubmitFunction } from "@sveltejs/kit";
   import type { APIResponse } from "$lib/types/common";
+  import { communicationOptions } from "$lib/types/option";
 
   let ownerData = {
     name: "",
@@ -94,7 +96,12 @@
 
         <div>
           <Label for="communicationMedium" class="mb-2">Communication Medium *</Label>
-          <Input id="communicationMedium" name="communicationMedium" bind:value={ownerData.communicationMedium} required />
+          <Select
+            id="communicationMedium"
+            name="communicationMedium"
+            items={communicationOptions}
+            bind:value={ownerData.communicationMedium}
+          />
         </div>
 
         <div>

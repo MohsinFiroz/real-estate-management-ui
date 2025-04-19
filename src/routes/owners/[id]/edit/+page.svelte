@@ -7,6 +7,7 @@
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { Owner } from '$lib/types/owner.js'; // Updated type for Owner
   import type { APIResponse } from '$lib/types/common';
+  import { communicationOptions } from '$lib/types/option.js';
 
   export let data;
   let response = data.owner;
@@ -79,7 +80,12 @@
 
         <div>
           <Label for="communicationMedium" class="mb-2">Communication Medium *</Label>
-          <Input id="communicationMedium" name="communicationMedium" bind:value={owner.communicationMedium} required />
+          <Select
+            id="communicationMedium"
+            name="communicationMedium"
+            items={communicationOptions}
+            bind:value={owner.communicationMedium}
+          />
         </div>
 
         <div>

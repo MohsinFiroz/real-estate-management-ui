@@ -33,6 +33,7 @@
 		]
 	},
 	"dependencies": {
-		"flowbite-svelte-blocks": "^1.1.4"
+		"flowbite-svelte-blocks": "^1.1.4",
+		"svelte-bootstrap-icons": "^3.1.2"
 	}
 }

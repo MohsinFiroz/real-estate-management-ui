@@ -15,6 +15,7 @@
   import { enhance } from "$app/forms";
   import type { SubmitFunction } from "@sveltejs/kit";
   import type { APIResponse } from "$lib/types/common";
+  import { communicationOptions } from "$lib/types/option";
 
   let tenantData = {
     name: "",
@@ -102,9 +103,8 @@
           <Select
             id="communicationMedium"
             name="communicationMedium"
-            items={communicationMediumOptions}
+            items={communicationOptions}
             bind:value={tenantData.communicationMedium}
-            required
           />
         </div>
 

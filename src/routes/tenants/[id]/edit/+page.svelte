@@ -7,6 +7,7 @@
   import type { SubmitFunction } from '@sveltejs/kit';
   import type { Tenant } from '$lib/types/tenant.js';
   import type { APIResponse } from '$lib/types/common';
+  import { communicationOptions } from '$lib/types/option.js';
 
   export let data;
   let response = data.tenant;
@@ -82,17 +83,12 @@
 
         <div>
           <Label for="communicationMedium" class="mb-2">Communication Medium *</Label>
-          <Select 
-            id="communicationMedium" 
-            name="communicationMedium" 
-            bind:value={tenant.communicationMedium} 
-            required
-          >
-            <option value="email">Email</option>
-            <option value="phone">Phone</option>
-            <option value="sms">SMS</option>
-            <option value="whatsapp">WhatsApp</option>
-          </Select>
+          <Select
+            id="communicationMedium"
+            name="communicationMedium"
+            items={communicationOptions}
+            bind:value={tenant.communicationMedium}
+          />
         </div>
 
         <div class="col-span-full">
