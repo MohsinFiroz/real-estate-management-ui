@@ -25,7 +25,6 @@ export const actions: Actions = {
       mobile: formData.get('mobile') as string,
       email: formData.get('email') as string,
       communicationMedium: formData.get('communicationMedium') as string,
-      notes: formData.get('notes') as string
     };
 
     return tenantAPI.update(tenantID, updatedData);
