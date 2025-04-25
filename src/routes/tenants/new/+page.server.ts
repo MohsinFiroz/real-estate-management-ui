@@ -13,7 +13,6 @@ export const actions: Actions = {
     const mobile = formData.get("mobile")?.toString().trim() || "";
     const email = formData.get("email")?.toString().trim() || "";
     const communicationMedium = formData.get("communicationMedium")?.toString() || "";
-    const notes = formData.get("notes")?.toString().trim() || "";
 
     // Create tenant
     const tenantData: Partial<Tenant> = {
@@ -21,7 +20,6 @@ export const actions: Actions = {
       mobile,
       email,
       communicationMedium,
-      notes,
     };
 
     return await tenantAPI.create(tenantData);      

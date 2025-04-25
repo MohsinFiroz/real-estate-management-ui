@@ -4,7 +4,6 @@ export interface Tenant {
     mobile: string;
     email: string;
     communicationMedium: string;
-    notes: string;
     createdAt: string | null;
     updatedAt: string | null;
   }

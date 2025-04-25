@@ -90,16 +90,7 @@
             bind:value={tenant.communicationMedium}
           />
         </div>
-
-        <div class="col-span-full">
-          <Label for="notes" class="mb-2">Notes</Label>
-          <Input 
-            id="notes" 
-            name="notes" 
-            bind:value={tenant.notes} 
-            placeholder="Additional information"
-          />
-        </div>
+        
       </div>
 
       <div class="flex justify-end gap-2">

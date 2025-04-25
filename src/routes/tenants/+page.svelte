@@ -169,7 +169,6 @@
                 <TableBodyCell>{tenant.mobile}</TableBodyCell>
                 <TableBodyCell>{tenant.email}</TableBodyCell>
                 <TableBodyCell>{tenant.communicationMedium}</TableBodyCell>
-                <TableBodyCell>{tenant.notes}</TableBodyCell>
                 <TableBodyCell>{formatDate(tenant.createdAt)}</TableBodyCell>
                 <TableBodyCell>{formatDate(tenant.updatedAt)}</TableBodyCell>
                 <TableBodyCell>

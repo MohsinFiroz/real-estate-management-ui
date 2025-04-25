@@ -107,15 +107,6 @@
             bind:value={tenantData.communicationMedium}
           />
         </div>
-
-        <div class="md:col-span-2">
-          <Label for="notes" class="mb-2">Notes</Label>
-          <Textarea 
-            id="notes" 
-            name="notes" 
-            bind:value={tenantData.notes} 
-          />
-        </div>
       </div>
 
       <div class="flex justify-end gap-2">

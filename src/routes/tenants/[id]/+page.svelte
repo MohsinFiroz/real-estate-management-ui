@@ -104,11 +104,6 @@
         </div>
 
         <div>
-          <h3 class="text-sm font-medium text-gray-500">Notes</h3>
-          <p>{tenant.notes || "N/A"}</p>
-        </div>
-
-        <div>
           <h3 class="text-sm font-medium text-gray-500">Updated At</h3>
           <p>{formatDate(tenant.updatedAt)}</p>
         </div>
